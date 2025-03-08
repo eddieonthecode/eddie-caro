@@ -1,10 +1,9 @@
 .board-container {
   font-family: sans-serif;
   text-align: center;
-  width: calc(min(calc(100vh - 50px), 100vw));
-  padding-top: calc(min(calc(100vh - 50px), 100vw));
+  width: calc(min(calc(100vh - 250px), 100vw));
+  padding-top: calc(min(calc(100vh - 250px), 100vw));
   position: relative;
-  margin: 12px;
 }
 
 .board {
@@ -14,6 +13,7 @@
   flex-direction: column;
   overflow: hidden;
   row-gap: 10px;
+  margin: 12px;
 }
 
 .row {
@@ -28,7 +28,7 @@
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 16px;
+  position: relative;
 }
 
 .col.disable {
@@ -41,6 +41,42 @@
 
 .col:hover:not(.disable) {
   background: radial-gradient(#0ff, #9198e5) !important;
+}
+
+.col.win-square::before {
+  content: "";
+  position: absolute;
+  background-color: rgba(255, 0, 0, 0.8);
+  border-radius: 10px;
+  width: 10px;
+}
+
+.col.win-square.win-direction-0::before {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) rotate(90deg);
+}
+
+.col.win-square.win-direction-1::before {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.col.win-square.win-direction-2::before {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+.col.win-square.win-direction-3::before {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
 }
 
 .row .col:last-child {

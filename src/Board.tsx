@@ -6,6 +6,7 @@ type Props = {
   oIcon: string;
   size: number;
   streak: number;
+  gameStart: boolean;
   onRestart: (winner?: string) => void;
 };
 
@@ -13,6 +14,12 @@ type GameTurn = {
   player: string;
   row: number;
   col: number;
+  isWinSquare?: boolean;
+};
+
+type Square = {
+  player: string;
+  isWinSquare?: boolean;
 };
 
 const initialPlayer = "X";
@@ -22,10 +29,18 @@ export default function Board({
   oIcon,
   size,
   streak,
+  gameStart,
   onRestart,
 }: Props) {
-  let board = Array.from({ length: size }, () => Array(size).fill(null));
+  let board: Square[][] = Array.from({ length: size }, () =>
+    Array(size).fill({
+      player: null,
+      isWinSquare: false,
+    })
+  );
   const [gameTurns, setGameTurns] = useState<GameTurn[]>([]);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [winDirection, setWinDirection] = useState<number>(-1);
 
   const currPosition = useRef({
     row: -1,
@@ -33,24 +48,36 @@ export default function Board({
   });
 
   gameTurns.forEach((turn) => {
-    board[turn.row][turn.col] = turn.player;
+    board[turn.row][turn.col] = {
+      player: turn.player,
+      isWinSquare: turn.isWinSquare,
+    };
   });
 
   const currPlayer = gameTurns[0]?.player;
 
   const squareSize =
-    (Math.min(window.innerHeight - 50, window.innerWidth) - 24) / size;
+    (Math.min(window.innerHeight - 250, window.innerWidth) - 24) / size;
 
   const fontSize = Math.floor((squareSize * 3) / 5);
 
   useEffect(() => {
-    // When board changes check the winner
-    checkWinner(currPosition.current.row, currPosition.current.col);
-
-    // Check if the game is draw
-    if (gameTurns.length >= size * size) {
+    if (gameStart) {
       setGameTurns([]);
-      onRestart();
+      setIsPlaying(true);
+    }
+  }, [gameStart]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      // When board changes check the winner
+      checkWinner(currPosition.current.row, currPosition.current.col);
+
+      // Check if the game is draw
+      if (gameTurns.length >= size * size) {
+        setIsPlaying(false);
+        onRestart();
+      }
     }
   }, [gameTurns]);
 
@@ -81,39 +108,56 @@ export default function Board({
   function checkWinner(row: number, col: number) {
     if (row < 0 || col < 0) return;
 
-    let listDirections = [];
+    let listDirections: GameTurn[][] = [];
+
     // Horizontal
-    let horizontalSquares = [];
+    let horizontalSquares: GameTurn[] = [];
     for (let i = 0; i < size; i++) {
-      horizontalSquares.push(board[row][i]);
+      horizontalSquares.push({
+        row,
+        col: i,
+        player: board[row][i].player,
+      });
     }
 
     // Vertical
-    let verticalSquares = [];
+    let verticalSquares: GameTurn[] = [];
     for (let i = 0; i < size; i++) {
-      verticalSquares.push(board[i][col]);
+      verticalSquares.push({
+        row: i,
+        col,
+        player: board[i][col].player,
+      });
     }
 
     // Cross left - Sub of coordinate is const
     let sub = row - col;
-    let crossLeftSquares = [];
+    let crossLeftSquares: GameTurn[] = [];
 
     for (let i = 0; i < size; i++) {
       let currRow = i;
       let currCol = currRow - sub;
 
-      crossLeftSquares.push(board[currRow] ? board[currRow][currCol] : null);
+      crossLeftSquares.push({
+        row: currRow,
+        col: currCol,
+        player: board[currRow][currCol]?.player || "",
+      });
     }
 
     // Cross right - Sum of coordinate is const
     let sum = row + col;
-    let crossRightSquares = [];
+    let crossRightSquares: GameTurn[] = [];
 
     for (let i = size - 1; i >= 0; i--) {
       let currRow = i;
       let currCol = sum - currRow;
 
-      crossRightSquares.push(board[currRow] ? board[currRow][currCol] : null);
+      crossRightSquares.push({
+        row: currRow,
+        col: currCol,
+        player: board[currRow][currCol]?.player || "",
+      });
     }
 
     listDirections = [
@@ -124,48 +168,83 @@ export default function Board({
     ];
 
     // Have winner
-    if (listDirections.some((direction) => directionHaveWinner(direction))) {
-      onRestart(currPlayer);
-      setGameTurns([]);
-    }
+    listDirections.some((direction, index) => {
+      let winSquares = directionHaveWinner(direction);
+      if (winSquares) {
+        setIsPlaying(false);
+        setWinDirection(index);
+        setGameTurns((prevTurns) => {
+          let newTurns = [...prevTurns].map((turn) => {
+            if (
+              winSquares?.some((s) => s.row === turn.row && s.col === turn.col)
+            ) {
+              turn.isWinSquare = true;
+            }
+
+            return turn;
+          });
+
+          return newTurns;
+        });
+        onRestart(currPlayer);
+        return true;
+      }
+
+      return false;
+    });
   }
 
-  function directionHaveWinner(squares: (string | null)[]): boolean {
-    let count = 0;
+  function directionHaveWinner(squares: GameTurn[]): GameTurn[] | null {
+    let winSquares: GameTurn[] = [];
 
     for (let i = 0; i < squares.length; i++) {
-      if (squares[i - 1] != squares[i]) {
-        count = 1;
+      if (squares[i - 1]?.player !== squares[i].player) {
+        winSquares = [squares[i]];
         continue;
       }
 
-      if (squares[i]) count++;
+      if (squares[i].player) winSquares.push(squares[i]);
 
-      if (count >= streak) return true;
+      if (winSquares.length >= streak) return winSquares;
     }
 
-    return false;
+    return null;
   }
 
   return (
     <div className="board-container">
-      <div className="board" style={{ fontSize: `${fontSize}px` }}>
+      <div
+        className="board"
+        style={{ fontSize: `${fontSize}px`, rowGap: `${fontSize / 3}px` }}
+      >
         {board.map((row, rowIndex) => (
           <div
             key={rowIndex}
             className="row"
-            style={{ flexBasis: `${100 / size}%` }}
+            style={{
+              flexBasis: `${100 / size}%`,
+              columnGap: `${fontSize / 3}px`,
+            }}
           >
             {row.map((col, colIndex) => (
               <div
                 key={`${rowIndex} - ${colIndex}`}
-                className={"col " + (col ? "disable" : "")}
-                style={{ flexBasis: `${100 / size}%` }}
+                className={
+                  `col win-direction-${winDirection} ` +
+                  (col.player || !isPlaying ? "disable" : "") +
+                  (col.isWinSquare && " win-square")
+                }
+                style={{
+                  flexBasis: `${100 / size}%`,
+                  borderRadius: fontSize / 6,
+                }}
                 onClick={() => {
-                  !col && handleSelectSquare(rowIndex, colIndex);
+                  !col.player &&
+                    isPlaying &&
+                    handleSelectSquare(rowIndex, colIndex);
                 }}
               >
-                {col && <p> {col === "X" ? xIcon : oIcon}</p>}
+                {col.player && <p> {col.player === "X" ? xIcon : oIcon}</p>}
               </div>
             ))}
           </div>

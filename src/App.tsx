@@ -84,9 +84,19 @@ export default function App() {
             <div className="modal__footer">
               <button
                 className="btn-start"
-                onClick={() => setGameCongrats(false)}
+                onClick={() => {
+                  setGameCongrats(false);
+                  setGameStart(false);
+                }}
+                style={{ marginRight: 8 }}
               >
                 Restart
+              </button>
+              <button
+                className="btn-start"
+                onClick={() => setGameCongrats(false)}
+              >
+                Close
               </button>
             </div>
           </div>
@@ -154,17 +164,37 @@ export default function App() {
           </div>
         </div>
       )}
+      <h1 style={{ fontSize: 30, margin: "12px 0" }}>✖️ Eddie Caro ⭕</h1>
+      <button className="btn-start" onClick={() => setGameStart(false)}>
+        Restart
+      </button>
       <Board
         xIcon={xIcon || initialXIcon}
         oIcon={oIcon || initial0Icon}
         size={size}
         streak={streak}
+        gameStart={gameStart}
         onRestart={(w) => {
           setWinner(w);
           setGameCongrats(true);
-          setGameStart(false);
         }}
       />
+      <div className="appname">
+        <p style={{ whiteSpace: "nowrap" }}>Created by</p>
+        <a
+          href="https://github.com/eddieonthecode"
+          target="_blank"
+          style={{ display: "flex", alignItems: "center" }}
+        >
+          <p style={{ marginRight: 10, color: "aqua" }}>@eddieonthecode</p>
+          <img
+            src="https://assets.leetcode.com/users/eddieonthecode/avatar_1723366933.png"
+            width={60}
+            height={60}
+            style={{ borderRadius: "50%", display: "block" }}
+          />
+        </a>
+      </div>
     </div>
   );
 }
