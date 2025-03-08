@@ -6,7 +6,7 @@ type Props = {
   oIcon: string;
   size: number;
   streak: number;
-  onRestart: (winner: string) => void;
+  onRestart: (winner?: string) => void;
 };
 
 type GameTurn = {
@@ -46,6 +46,12 @@ export default function Board({
   useEffect(() => {
     // When board changes check the winner
     checkWinner(currPosition.current.row, currPosition.current.col);
+
+    // Check if the game is draw
+    if (gameTurns.length >= size * size) {
+      setGameTurns([]);
+      onRestart();
+    }
   }, [gameTurns]);
 
   /**

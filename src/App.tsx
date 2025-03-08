@@ -19,6 +19,17 @@ const congratsImages = [
   "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHdlZHY3dDkzcDR2aW94Y2NlaW41MDAzczFicmkydXFrNnZ0dWplYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GYWZd329enuFxLtLNF/giphy.gif",
 ];
 
+const drawImages = [
+  "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnc2MW51aDV3YnN0eGp6Z2p4bmVoOXZpbDhpdHhwMXNibzFlN3M3ayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LvfaTMWFXlZWO9hcLS/giphy.gif",
+  "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHFmajFxc2FmYWkzMTF0MHVjenZuZTZuZmRhcmE4dGNrdnJxOHRyZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RK1uflXrBAmZhNS2Rw/giphy.gif",
+  "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2R4bnpndzRidGg0a2FnMDk5aHZ0em9oeGp4ZjF0cnVrZmVtdDdlMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/vbmEcV7oud1CML2iIQ/giphy.gif",
+  "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExc2E4azV0ZGEzazhsdXVkdGRuc2I5MjF3M3h0NnA2cmFhbDIzY2Z2NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Vz58J8shFW6BvqnYTm/giphy.gif",
+  "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHRuZ3p6ODlva2Z3NG52ZWtncm8zZnBlcDlkc3BmdTF3dnF2Y3YzYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/z1Ss4CmBlWbUcn9YRs/giphy.gif",
+  "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmU1MjVxenA0OTkzd3k3M213bXJ1NWR1YXp2eXgzc3lncnloeHB2dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/O3ZHZ0o6HllIILkE3x/giphy.gif",
+  "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzRuenM1M3Q1cHFobmZ1bzd6aXR3M29qeTVhamgzOTQ0NmNrM3p5dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oEjHG6BNeKNohrZiU/giphy.gif",
+  "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnJ3YmI3NW9ld3NsYjJ1OWg4Y2NrbG9kdWRsN211aWw5aDNnNmplMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l3vR4n3mPNJn37vb2/giphy.gif",
+];
+
 export default function App() {
   const [xIcon, setXIcon] = useState<string>();
   const [oIcon, set0Icon] = useState<string>();
@@ -44,23 +55,29 @@ export default function App() {
               }}
             >
               <h1>
-                Congratulations.
-                {winner === "X" ? xIcon || initialXIcon : oIcon || initial0Icon}
-                wins 🎇🎇🎇!
+                {winner
+                  ? `Congratulations. ${
+                      winner === "X"
+                        ? xIcon || initialXIcon
+                        : oIcon || initial0Icon
+                    } wins 🔥🔥🔥`
+                  : `This game is draw 🤝🤝🤝`}
               </h1>
               <img
                 src={
-                  congratsImages[
-                    Math.floor(Math.random() * congratsImages.length)
-                  ]
+                  winner
+                    ? congratsImages[
+                        Math.floor(Math.random() * congratsImages.length)
+                      ]
+                    : drawImages[Math.floor(Math.random() * drawImages.length)]
                 }
                 alt=""
-                width={300}
+                width={"100%"}
                 height={300}
                 style={{
-                  marginBottom: "20px",
+                  margin: "20px 0",
                   display: "block",
-                  objectFit: "contain",
+                  objectFit: "cover",
                 }}
               />
             </div>
