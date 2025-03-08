@@ -33,7 +33,7 @@ export default function App() {
             >
               <h1>
                 Congratulations.{" "}
-                {winner === "X" ? xIcon ?? initial0Icon : oIcon ?? initial0Icon}{" "}
+                {winner === "X" ? xIcon ?? initialXIcon : oIcon ?? initial0Icon}
                 wins 🎇🎇🎇!
               </h1>
               <img
