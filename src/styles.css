@@ -1,0 +1,93 @@
+* {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal__header {
+  font-family: monospace;
+  margin-bottom: 20px;
+  color: brown;
+}
+
+.modal__container {
+  background-color: white;
+  padding: 12px 20px;
+  border-radius: 16px;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 12px;
+  margin: 20px 0;
+}
+
+.info__input {
+  border: 1px solid grey;
+  border-radius: 8px;
+  padding: 8px 12px;
+  outline: none;
+  flex-basis: 50%;
+  min-width: 0;
+  margin: 0 12px;
+}
+
+.info__select {
+  border: 1px solid grey;
+  border-radius: 8px;
+  outline: none;
+  min-width: 0;
+  flex-basis: 50%;
+  margin: 0 12px;
+}
+
+.btn-start {
+  background-color: cornflowerblue;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 16px;
+  width: 120px;
+  cursor: pointer;
+}
+
+.btn-start:hover {
+  background-color: rgb(114, 154, 226);
+}
+
+.btn-start:active {
+  background-color: rgb(46, 109, 226);
+}
+
+.btn-start.disable {
+  background-color: grey !important;
+}
+
+.notice {
+  color: red;
+  margin: 8px 12px;
+  width: 100%;
+}
