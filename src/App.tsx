@@ -8,10 +8,10 @@ const initialXIcon = "✖️";
 const initial0Icon = "⭕";
 
 export default function App() {
-  const [xIcon, setXIcon] = useState<string>(initialXIcon);
-  const [oIcon, set0Icon] = useState<string>(initial0Icon);
-  const [size, setSize] = useState<number>(initialSize);
-  const [streak, setStreak] = useState<number>(initialStreak);
+  const [xIcon, setXIcon] = useState<string>();
+  const [oIcon, set0Icon] = useState<string>();
+  const [size, setSize] = useState<number>(0);
+  const [streak, setStreak] = useState<number>(0);
   const [gameStart, setGameStart] = useState<boolean>(false);
   const [gameCongrats, setGameCongrats] = useState<boolean>(false);
   const [winner, setWinner] = useState<string>();
@@ -70,7 +70,7 @@ export default function App() {
                 <input
                   className="info__input"
                   type={"number"}
-                  placeholder="Size"
+                  placeholder="Size - 10"
                   value={size}
                   onChange={(e) => setSize(+(e.target.value ?? initialSize))}
                 />
@@ -78,7 +78,7 @@ export default function App() {
                   className="info__input"
                   type={"number"}
                   value={streak}
-                  placeholder="Streak"
+                  placeholder="Streak - 5"
                   onChange={(e) =>
                     setStreak(+(e.target.value ?? initialStreak))
                   }
@@ -88,12 +88,14 @@ export default function App() {
                 <input
                   className="info__input"
                   maxLength={10}
+                  value={xIcon}
                   placeholder={`Default ${initialXIcon}`}
                   onChange={(e) => setXIcon(e.target.value)}
                 />
                 <input
                   className="info__input"
                   maxLength={10}
+                  value={oIcon}
                   placeholder={`Default ${initial0Icon}`}
                   onChange={(e) => set0Icon(e.target.value)}
                 />
@@ -114,10 +116,10 @@ export default function App() {
         </div>
       )}
       <Board
-        xIcon={xIcon}
-        oIcon={oIcon}
-        size={size}
-        streak={streak}
+        xIcon={xIcon || initialXIcon}
+        oIcon={oIcon || initial0Icon}
+        size={size || initialSize}
+        streak={streak || initialStreak}
         onRestart={(w) => {
           setWinner(w);
           setGameCongrats(true);
