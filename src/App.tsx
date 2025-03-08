@@ -1,9 +1,9 @@
 import "./styles.css";
 import Board from "./Board";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-const initialSize = 10;
-const initialStreak = 5;
+const initialSize = 3;
+const initialStreak = 3;
 const initialXIcon = "✖️";
 const initial0Icon = "⭕";
 const congratsImages = [
