@@ -6,6 +6,18 @@ const initialSize = 10;
 const initialStreak = 5;
 const initialXIcon = "✖️";
 const initial0Icon = "⭕";
+const congratsImages = [
+  "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3lncjBzb3k3dWNqenUzeTY3dGk0cXh1dWwzMWh5MDBpc3J1N2hmbyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/g9582DNuQppxC/giphy.gif",
+  "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExampkYnB0cjk3b2d4bmhsY2pxcnRyZXJ1MTNhMG82N3p5cWV1MHdvdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L2o1fRY14ZgrzGWWQh/giphy.gif",
+  "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYXhiYnF3bWp2MGxyZW9qY3RkZ3VjZ3c1MHN5Mjk4YXo1dmI0dXlnMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/bw9sc2HXiK5ES9mJU4/giphy.gif",
+  "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3gzdm5hdG5mZmFsNHUxZGVpeTJ3azMydjk5dG9iMGFrcXRka2dvbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/UsTNoiGR7OBsDcUvuG/giphy.gif",
+  "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXZjZTJvazBzaHhkMWY3bDRqZnVjeTU1ZXE5aWIyZzFuNWF3YmxpNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oz8xGoEtS4H6uUT8k/giphy.gif",
+  "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaGZxbXczdWx6b2g3ZDd1eXlyeDF3N3U4d3hvcGtpaG5qYnNncnllZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26DOoDwdNGKAg6UKI/giphy.gif",
+  "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExN20zMTN4dmFiZjJtcjh2ZXl5M3Rma2FtMmZub2c1ejl4N3J6Ynl4cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUPGGzU2dc1AjtFN2o/giphy.gif",
+  "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExc2syejUzYzc2NnpxbDRhYTZ4azV1cGUwZDBoN242N2dqaXJ2Zml1NSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/0ksns8g525Jg5t7aTM/giphy.gif",
+  "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZTI2ZXprY2w2czJub3NsejhldWRuNXdtazdvcmI5NjNhdDhxM2t4aSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rqecUwSATGGMfuUi13/giphy.gif",
+  "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHdlZHY3dDkzcDR2aW94Y2NlaW41MDAzczFicmkydXFrNnZ0dWplYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GYWZd329enuFxLtLNF/giphy.gif",
+];
 
 export default function App() {
   const [xIcon, setXIcon] = useState<string>();
@@ -32,16 +44,24 @@ export default function App() {
               }}
             >
               <h1>
-                Congratulations.{" "}
-                {winner === "X" ? xIcon ?? initialXIcon : oIcon ?? initial0Icon}
+                Congratulations.
+                {winner === "X" ? xIcon || initialXIcon : oIcon || initial0Icon}
                 wins 🎇🎇🎇!
               </h1>
               <img
-                src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExampkYnB0cjk3b2d4bmhsY2pxcnRyZXJ1MTNhMG82N3p5cWV1MHdvdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L2o1fRY14ZgrzGWWQh/giphy.gif"
+                src={
+                  congratsImages[
+                    Math.floor(Math.random() * congratsImages.length)
+                  ]
+                }
                 alt=""
                 width={300}
                 height={300}
-                style={{ marginBottom: "20px", display: "block" }}
+                style={{
+                  marginBottom: "20px",
+                  display: "block",
+                  objectFit: "contain",
+                }}
               />
             </div>
             <div className="modal__footer">
