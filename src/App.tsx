@@ -10,8 +10,8 @@ const initial0Icon = "⭕";
 export default function App() {
   const [xIcon, setXIcon] = useState<string>();
   const [oIcon, set0Icon] = useState<string>();
-  const [size, setSize] = useState<number>(0);
-  const [streak, setStreak] = useState<number>(0);
+  const [size, setSize] = useState<number>(initialSize);
+  const [streak, setStreak] = useState<number>(initialStreak);
   const [gameStart, setGameStart] = useState<boolean>(false);
   const [gameCongrats, setGameCongrats] = useState<boolean>(false);
   const [winner, setWinner] = useState<string>();
@@ -118,8 +118,8 @@ export default function App() {
       <Board
         xIcon={xIcon || initialXIcon}
         oIcon={oIcon || initial0Icon}
-        size={size || initialSize}
-        streak={streak || initialStreak}
+        size={size}
+        streak={streak}
         onRestart={(w) => {
           setWinner(w);
           setGameCongrats(true);
