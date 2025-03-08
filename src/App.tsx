@@ -32,7 +32,9 @@ export default function App() {
               }}
             >
               <h1>
-                Congratulations. {winner === "X" ? xIcon : oIcon} wins 🎇🎇🎇!
+                Congratulations.{" "}
+                {winner === "X" ? xIcon ?? initial0Icon : oIcon ?? initial0Icon}{" "}
+                wins 🎇🎇🎇!
               </h1>
               <img
                 src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExampkYnB0cjk3b2d4bmhsY2pxcnRyZXJ1MTNhMG82N3p5cWV1MHdvdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/L2o1fRY14ZgrzGWWQh/giphy.gif"
