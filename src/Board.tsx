@@ -265,7 +265,10 @@ export default function Board({
                     style={{
                       width:
                         ((winDirection >= 2 ? 1.42 : 1) * (squareSize * 7)) / 6,
-                      height: squareSize / 10,
+                      height: squareSize / 20,
+                      boxShadow: `0 0 ${fontSize / 6}px ${
+                        fontSize / 6
+                      }px rgba(255, 0, 0, 0.5)`,
                     }}
                   ></div>
                 )}
