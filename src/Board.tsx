@@ -6,8 +6,8 @@ type Props = {
   oIcon: string;
   size: number;
   streak: number;
-  gameStart: boolean;
-  onRestart: (winner?: string) => void;
+  isPlaying: boolean;
+  onFinish: (winner?: string) => void;
 };
 
 type GameTurn = {
@@ -29,8 +29,8 @@ export default function Board({
   oIcon,
   size,
   streak,
-  gameStart,
-  onRestart,
+  isPlaying,
+  onFinish,
 }: Props) {
   let board: Square[][] = Array.from({ length: size }, () =>
     Array(size).fill({
@@ -39,7 +39,6 @@ export default function Board({
     })
   );
   const [gameTurns, setGameTurns] = useState<GameTurn[]>([]);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [winDirection, setWinDirection] = useState<number>(-1);
 
   const currPosition = useRef({
@@ -47,39 +46,49 @@ export default function Board({
     col: -1,
   });
 
-  gameTurns.forEach((turn) => {
-    board[turn.row][turn.col] = {
-      player: turn.player,
-      isWinSquare: turn.isWinSquare,
-    };
-  });
-
   const currPlayer = gameTurns[0]?.player;
 
   const squareSize =
-    (Math.min(window.innerHeight - 250, window.innerWidth) - 24) / size;
+    (Math.min(window.innerHeight - 280, window.innerWidth) - 24) / size;
 
   const fontSize = Math.floor((squareSize * 3) / 5);
 
+  // Build board base on GameTurns
+  buildBoard();
+
   useEffect(() => {
-    if (gameStart) {
+    // Remove all turns when start a game
+    if (isPlaying) {
       setGameTurns([]);
-      setIsPlaying(true);
     }
-  }, [gameStart]);
+  }, [isPlaying]);
 
   useEffect(() => {
     if (isPlaying) {
       // When board changes check the winner
-      checkWinner(currPosition.current.row, currPosition.current.col);
+      if (checkWinner(currPosition.current.row, currPosition.current.col))
+        return;
 
       // Check if the game is draw
       if (gameTurns.length >= size * size) {
-        setIsPlaying(false);
-        onRestart();
+        onFinish();
       }
     }
   }, [gameTurns]);
+
+  /**
+   * Build board
+   */
+  function buildBoard() {
+    gameTurns.forEach((turn) => {
+      if (board[turn.row] && board[turn.row][turn.col]) {
+        board[turn.row][turn.col] = {
+          player: turn.player,
+          isWinSquare: turn.isWinSquare,
+        };
+      }
+    });
+  }
 
   /**
    * Handle select square
@@ -105,9 +114,10 @@ export default function Board({
   /**
    * Check winner
    */
-  function checkWinner(row: number, col: number) {
-    if (row < 0 || col < 0) return;
+  function checkWinner(row: number, col: number): boolean {
+    if (row < 0 || col < 0) return false;
 
+    // Build directions which contain the current square
     let listDirections: GameTurn[][] = [];
 
     // Horizontal
@@ -167,26 +177,13 @@ export default function Board({
       crossRightSquares,
     ];
 
-    // Have winner
-    listDirections.some((direction, index) => {
+    // Check winner
+    return listDirections.some((direction, index) => {
       let winSquares = directionHaveWinner(direction);
+
+      // Have winner
       if (winSquares) {
-        setIsPlaying(false);
-        setWinDirection(index);
-        setGameTurns((prevTurns) => {
-          let newTurns = [...prevTurns].map((turn) => {
-            if (
-              winSquares?.some((s) => s.row === turn.row && s.col === turn.col)
-            ) {
-              turn.isWinSquare = true;
-            }
-
-            return turn;
-          });
-
-          return newTurns;
-        });
-        onRestart(currPlayer);
+        handleWinner(winSquares, index);
         return true;
       }
 
@@ -194,6 +191,9 @@ export default function Board({
     });
   }
 
+  /**
+   * Check direction have winner
+   */
   function directionHaveWinner(squares: GameTurn[]): GameTurn[] | null {
     let winSquares: GameTurn[] = [];
 
@@ -209,6 +209,25 @@ export default function Board({
     }
 
     return null;
+  }
+
+  /**
+   * Handle when the game has the winner
+   */
+  function handleWinner(winSquares: GameTurn[], index: number) {
+    setWinDirection(index);
+    setGameTurns((prevTurns) => {
+      let newTurns = [...prevTurns].map((turn) => {
+        if (winSquares?.some((s) => s.row === turn.row && s.col === turn.col)) {
+          turn.isWinSquare = true;
+        }
+
+        return turn;
+      });
+
+      return newTurns;
+    });
+    onFinish(currPlayer);
   }
 
   return (
@@ -229,11 +248,7 @@ export default function Board({
             {row.map((col, colIndex) => (
               <div
                 key={`${rowIndex} - ${colIndex}`}
-                className={
-                  `col win-direction-${winDirection} ` +
-                  (col.player || !isPlaying ? "disable" : "") +
-                  (col.isWinSquare && " win-square")
-                }
+                className={`col ` + (col.player || !isPlaying ? "disable" : "")}
                 style={{
                   flexBasis: `${100 / size}%`,
                   borderRadius: fontSize / 6,
@@ -244,6 +259,16 @@ export default function Board({
                     handleSelectSquare(rowIndex, colIndex);
                 }}
               >
+                {col.isWinSquare && (
+                  <div
+                    className={`win-line win-direction-${winDirection}`}
+                    style={{
+                      width:
+                        ((winDirection >= 2 ? 1.42 : 1) * (squareSize * 7)) / 6,
+                      height: squareSize / 10,
+                    }}
+                  ></div>
+                )}
                 {col.player && <p> {col.player === "X" ? xIcon : oIcon}</p>}
               </div>
             ))}

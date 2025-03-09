@@ -35,137 +35,151 @@ export default function App() {
   const [oIcon, set0Icon] = useState<string>();
   const [size, setSize] = useState<number>(initialSize);
   const [streak, setStreak] = useState<number>(initialStreak);
-  const [gameStart, setGameStart] = useState<boolean>(false);
-  const [gameCongrats, setGameCongrats] = useState<boolean>(false);
+  const [showStartModal, setShowStartModal] = useState<boolean>(true);
+  const [showResultModal, setShowResultModal] = useState<boolean>(false);
   const [winner, setWinner] = useState<string>();
-  const isValid = streak >= 3 && size >= streak;
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const isValid = streak >= 3 && size >= streak && size <= 50;
 
   return (
     <div className="App">
-      {gameCongrats && (
-        <div className="modal">
-          <div className="modal__container">
-            <div
-              className="modal__body"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <h1>
-                {winner
-                  ? `Congratulations. ${
-                      winner === "X"
-                        ? xIcon || initialXIcon
-                        : oIcon || initial0Icon
-                    } wins 🔥🔥🔥`
-                  : `This game is draw 🤝🤝🤝`}
-              </h1>
-              <img
-                src={
-                  winner
-                    ? congratsImages[
-                        Math.floor(Math.random() * congratsImages.length)
-                      ]
-                    : drawImages[Math.floor(Math.random() * drawImages.length)]
-                }
-                alt=""
-                width={"100%"}
-                height={300}
+      {
+        // Result modal
+        showResultModal && (
+          <div className="modal">
+            <div className="modal__container">
+              <div
+                className="modal__body"
                 style={{
-                  margin: "20px 0",
-                  display: "block",
-                  objectFit: "cover",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-              />
-            </div>
-            <div className="modal__footer">
-              <button
-                className="btn-start"
-                onClick={() => {
-                  setGameCongrats(false);
-                  setGameStart(false);
-                }}
-                style={{ marginRight: 8 }}
               >
-                Restart
-              </button>
-              <button
-                className="btn-start"
-                onClick={() => setGameCongrats(false)}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {!gameCongrats && !gameStart && (
-        <div className="modal">
-          <div className="modal__container">
-            <div className="modal__header">
-              <h1>Welcome to Eddie Caro</h1>
-            </div>
-            <div className="modal__body">
-              {!isValid && (
-                <p className="notice">
-                  Streak must be greater than 3 and Size must be greater than
-                  Streak
-                </p>
-              )}
-              <div className="info">
-                <input
-                  className="info__input"
-                  type={"number"}
-                  placeholder="Size - 10"
-                  value={size}
-                  onChange={(e) => setSize(+(e.target.value ?? initialSize))}
-                />
-                <input
-                  className="info__input"
-                  type={"number"}
-                  value={streak}
-                  placeholder="Streak - 5"
-                  onChange={(e) =>
-                    setStreak(+(e.target.value ?? initialStreak))
+                <h1>
+                  {winner
+                    ? `Congratulations. ${
+                        winner === "X"
+                          ? xIcon || initialXIcon
+                          : oIcon || initial0Icon
+                      } wins 🔥🔥🔥`
+                    : `This game is draw 🤝🤝🤝`}
+                </h1>
+                <img
+                  src={
+                    winner
+                      ? congratsImages[
+                          Math.floor(Math.random() * congratsImages.length)
+                        ]
+                      : drawImages[
+                          Math.floor(Math.random() * drawImages.length)
+                        ]
                   }
+                  alt=""
+                  width={"100%"}
+                  height={300}
+                  style={{
+                    margin: "20px 0",
+                    display: "block",
+                    objectFit: "cover",
+                  }}
                 />
               </div>
-              <div className="info">
-                <input
-                  className="info__input"
-                  maxLength={10}
-                  value={xIcon}
-                  placeholder={`Default ${initialXIcon}`}
-                  onChange={(e) => setXIcon(e.target.value)}
-                />
-                <input
-                  className="info__input"
-                  maxLength={10}
-                  value={oIcon}
-                  placeholder={`Default ${initial0Icon}`}
-                  onChange={(e) => set0Icon(e.target.value)}
-                />
+              <div className="modal__footer">
+                <button
+                  className="btn-start"
+                  onClick={() => {
+                    setShowResultModal(false);
+                    setShowStartModal(true);
+                  }}
+                  style={{ marginRight: 8 }}
+                >
+                  Restart
+                </button>
+                <button
+                  className="btn-start"
+                  onClick={() => setShowResultModal(false)}
+                >
+                  Close
+                </button>
               </div>
-            </div>
-            <div className="modal__footer">
-              <button
-                disabled={!isValid}
-                className={`btn-start ${!isValid && "disable"}`}
-                onClick={() => {
-                  setGameStart(true);
-                }}
-              >
-                Start
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
+
+      {
+        // Start modal
+        showStartModal && (
+          <div className="modal">
+            <div className="modal__container">
+              <div className="modal__header">
+                <h1>Welcome to Eddie Caro</h1>
+              </div>
+              <div className="modal__body">
+                {!isValid && (
+                  <p className="notice">{`3 <= Streak <= Size <= 50`}</p>
+                )}
+                <div className="info">
+                  <input
+                    className="info__input"
+                    type={"number"}
+                    placeholder="Size - 10"
+                    value={size}
+                    onChange={(e) => setSize(+(e.target.value ?? initialSize))}
+                  />
+                  <input
+                    className="info__input"
+                    type={"number"}
+                    value={streak}
+                    placeholder="Streak - 5"
+                    onChange={(e) =>
+                      setStreak(+(e.target.value ?? initialStreak))
+                    }
+                  />
+                </div>
+                <div className="info">
+                  <input
+                    className="info__input"
+                    maxLength={10}
+                    value={xIcon}
+                    placeholder={`Default ${initialXIcon}`}
+                    onChange={(e) => setXIcon(e.target.value)}
+                  />
+                  <input
+                    className="info__input"
+                    maxLength={10}
+                    value={oIcon}
+                    placeholder={`Default ${initial0Icon}`}
+                    onChange={(e) => set0Icon(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="modal__footer">
+                <button
+                  disabled={!isValid}
+                  className={`btn-start ${!isValid && "disable"}`}
+                  onClick={() => {
+                    setShowStartModal(false);
+                    setIsPlaying(true);
+                  }}
+                >
+                  Start
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      }
       <h1 style={{ fontSize: 30, margin: "12px 0" }}>✖️ Eddie Caro ⭕</h1>
-      <button className="btn-start" onClick={() => setGameStart(false)}>
+      <button
+        className="btn-start"
+        onClick={() => {
+          setShowStartModal(true);
+          setIsPlaying(false);
+        }}
+      >
         Restart
       </button>
       <Board
@@ -173,12 +187,15 @@ export default function App() {
         oIcon={oIcon || initial0Icon}
         size={size}
         streak={streak}
-        gameStart={gameStart}
-        onRestart={(w) => {
+        isPlaying={isPlaying}
+        onFinish={(w) => {
           setWinner(w);
-          setGameCongrats(true);
+          setShowResultModal(true);
+          setIsPlaying(false);
         }}
       />
+
+      {/* Info */}
       <div className="appname">
         <p style={{ whiteSpace: "nowrap" }}>Created by</p>
         <a
