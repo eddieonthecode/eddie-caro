@@ -1,8 +1,8 @@
 .board-container {
   font-family: sans-serif;
   text-align: center;
-  width: calc(min(calc(100vh - 280px), 100vw));
-  padding-top: calc(min(calc(100vh - 280px), 100vw));
+  width: calc(min(calc(100dvh - 280px), 100vw));
+  padding-top: calc(min(calc(100dvh - 280px), 100vw));
   position: relative;
 }
 
